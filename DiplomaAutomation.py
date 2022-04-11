@@ -9,8 +9,6 @@ diploma_template = "diploma.jpg"
 output_path = "./out"
 font_name = "CASTELAR.TTF"
 
-
-
 ######
 
 def diploma(text, path, template, font):
@@ -59,5 +57,7 @@ def startAutomation(path, template, font, name_file, last_name_file = ""):
         print(f"[{i} : {maxiteration}] - {fullname}")
 
     print((time.time_ns() - start) * (10 ** -9))
+
+    return(str((time.time_ns() - start) * (10 ** -9)))
 
 # startAutomation(output_path, diploma_template, font_name, name_in_file, lastname_in_file)

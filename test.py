@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 import DiplomaAutomation as auto
+import os
 
 name_in_file = "names.txt"
 lastname_in_file = "lastnames.txt"
@@ -7,33 +8,21 @@ diploma_template = "diploma.jpg"
 output_path = "./out"
 font_name = "CASTELAR.TTF"
 
+raw_font_list = os.listdir(r'C:\Windows\fonts')
+font_list = ["-None-"]
+for i in raw_font_list:
+    if "ttf" in i or "TTF" in i:
+        font_list.append(i)
 
-sg.theme("Dark Amber")
-#
-# layout = [
-# [sg.Text("Filename")],
-# [sg.Input(), sg.FileBrowse()],
-# [sg.OK(), sg.Button("Exit")]
-# ]
-#
-# window = sg.Window("Title", layout)
-#
-# while True:
-#     event, values = window.read()
-#     if event == sg.WIN_CLOSED or event == "Exit":
-#         break
-#     print(event, values)
-#
-# window.close()
-#
-# sg.Popup(event,values[0])
+print(font_list)
 
-##############################
+
+sg.theme("Dark Grey 13")
 
 layout = [
 [sg.T("Automatic diploma filling program")],
-[sg.FileBrowse("Template image", key="-BROWSE_TEMPLATE-", target="temp_show", size=12), sg.Text(key="temp_show", size=30)],
-[sg.FileBrowse("Font file", key="-BROWSE_FONT-", target="font_show", size=12), sg.Text(key="font_show", size=30)],
+[sg.FileBrowse("Template image", key="-BROWSE_TEMPLATE-", target="temp_show", size=12, enable_events=True), sg.Text(key="temp_show", size=30)],
+[sg.Combo(font_list, default_value=font_list[0], size=15, enable_events=True, key="-FONT_COMBO-"), sg.FileBrowse("Font file", key="-BROWSE_FONT-", target="font_show", size=12), sg.Text(key="font_show", size=30)],
 [sg.FileBrowse("Name list", key="-BROWSE_NAME-", target="name_show", size=12), sg.Text(key="name_show", size=30)],
 [sg.FileBrowse("*Last name list", key="-BROWSE_LAST_NAME-", target="last_name_show", size=12), sg.Text(key="last_name_show", size=30)],
 [sg.Text("Output folder: "), sg.Input(size=20, key="-OUTPUT_PATH-")],
@@ -43,16 +32,25 @@ layout = [
 
 window = sg.Window("Title", layout)
 
+debug_count = 0
+
+def debug(text):
+    global debug_count
+    debug_count += 1
+    window["-DEBUGG-"].update(f"[{str(debug_count)}] {text}")
+
 while True:
     event, values = window.read()
-    # print(event, values)
-    if event in (sg.WIN_CLOSED, "Exit"):
+    print(event, values, debug_count)
+    if event == sg.WIN_CLOSED or event == "Exit" and sg.popup_yes_no("U sure?") == "Yes":
         break
+    if event == "-FONT_COMBO-":
+        
     if event == "Test":
         print(event, values)
     if event == "Run":
-        if not (values["-BROWSE_TEMPLATE-"] or values["-BROWSE_FONT-"] or values["-BROWSE_NAME-"]):
-            window["-DEBUGG-"].update("not enough data")
+        if not values["-BROWSE_TEMPLATE-"] or not values["-BROWSE_FONT-"] or not values["-BROWSE_NAME-"]:
+            debug("Not enough data")
             continue
 
         output_path = "./" + values["-OUTPUT_PATH-"] if values["-OUTPUT_PATH-"] != "" else "./out"
@@ -62,8 +60,10 @@ while True:
         lastname_in_file = values["-BROWSE_LAST_NAME-"] if values["-BROWSE_LAST_NAME-"] != "" else ""
 
         # print(output_path, diploma_template, font_name, name_in_file, lastname_in_file)
-        auto.startAutomation(output_path, diploma_template, font_name, name_in_file, lastname_in_file)
+        time = auto.startAutomation(output_path, diploma_template, font_name, name_in_file, lastname_in_file)
         # window["-OUT-"].update(values["-IN-"])
         # print(values["-BROWSE-"])
+
+        debug(f"Run was succesful {time}s")
 
 window.close()
