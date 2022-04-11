@@ -9,7 +9,7 @@ output_path = "./out"
 font_name = "CASTELAR.TTF"
 
 raw_font_list = os.listdir(r'C:\Windows\fonts')
-font_list = ["-None-"]
+font_list = ["-Custom-"]
 for i in raw_font_list:
     if "ttf" in i or "TTF" in i:
         font_list.append(i)
@@ -39,15 +39,22 @@ def debug(text):
     debug_count += 1
     window["-DEBUGG-"].update(f"[{str(debug_count)}] {text}")
 
+default_font = False
+
 while True:
     event, values = window.read()
-    print(event, values, debug_count)
+    # print(event, values, debug_count)
     if event == sg.WIN_CLOSED or event == "Exit" and sg.popup_yes_no("U sure?") == "Yes":
         break
     if event == "-FONT_COMBO-":
-        
+        if values["-FONT_COMBO-"] == font_list[0]:
+            default_font = False
+        else:
+            default_font = True
+            print("change")
     if event == "Test":
-        print(event, values)
+        font_name = values["-FONT_COMBO-"] if default_font else values["-BROWSE_FONT-"]
+        print(event, values, font_name)
     if event == "Run":
         if not values["-BROWSE_TEMPLATE-"] or not values["-BROWSE_FONT-"] or not values["-BROWSE_NAME-"]:
             debug("Not enough data")
@@ -55,7 +62,7 @@ while True:
 
         output_path = "./" + values["-OUTPUT_PATH-"] if values["-OUTPUT_PATH-"] != "" else "./out"
         diploma_template = values["-BROWSE_TEMPLATE-"]
-        font_name = values["-BROWSE_FONT-"]
+        font_name = values["-FONT_COMBO-"] if default_font else values["-BROWSE_FONT-"]
         name_in_file = values["-BROWSE_NAME-"]
         lastname_in_file = values["-BROWSE_LAST_NAME-"] if values["-BROWSE_LAST_NAME-"] != "" else ""
 
