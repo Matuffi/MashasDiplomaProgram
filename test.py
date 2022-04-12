@@ -56,7 +56,7 @@ while True:
         font_name = values["-FONT_COMBO-"] if default_font else values["-BROWSE_FONT-"]
         print(event, values, font_name)
     if event == "Run":
-        if not values["-BROWSE_TEMPLATE-"] or not values["-BROWSE_FONT-"] or not values["-BROWSE_NAME-"]:
+        if not (values["-BROWSE_TEMPLATE-"] and (values["-BROWSE_FONT-"] or default_font) and values["-BROWSE_NAME-"]):
             debug("Not enough data")
             continue
 
