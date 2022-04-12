@@ -1,4 +1,4 @@
-from PIL import ImageDraw, Image, ImageFont
+from lib.PIL import ImageDraw, Image, ImageFont
 import time
 import random
 import os

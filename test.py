@@ -1,4 +1,5 @@
-import PySimpleGUI as sg
+from lib import PySimpleGUI as sg
+
 import DiplomaAutomation as auto
 import os
 
